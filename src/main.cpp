@@ -1,34 +1,64 @@
 #include <iostream>
+#include <fstream>
+#include <vector>
 #include <memory>
-#include "FileRepository.hpp"
-#include "Command.hpp"
-#include "QueryCommand.hpp"
-#include "AnalyticsCommand.hpp"
+#include "Model/Log.hpp"
+#include "Repository/InMemoryRepository.hpp"
+#include "Command/QueryCommand.hpp"
 
-bool startsWith(const std::string& str, const std::string& prefix) {
-    return str.size() >= prefix.size() && str.compare(0, prefix.size(), prefix) == 0;
+std::vector<Log> loadLogsFromFile(const std::string& filename) {
+    std::ifstream file(filename);
+    std::vector<Log> logs;
+    std::string line;
+
+    while (std::getline(file, line)) {
+        try {
+            logs.push_back(Log::fromString(line));
+        } catch (...) {
+            std::cerr << "Parse error: " << line << std::endl;
+        }
+    }
+
+    return logs;
 }
 
 int main() {
-    std::string input;
-    FileRepository repo;
-    while (true) {
-        std::cout << "Write a command " << std::endl;
-        std::getline(std::cin, input);
-        if (input == "exit") break;
+    std::cout << "Choose data source:\n1 - File\n2 - Database\n> ";
+    int choice;
+    std::cin >> choice;
+    std::cin.ignore();
 
-        std::unique_ptr<Command> command;
+    std::shared_ptr<LogRepository> repo;
 
-        if (startsWith(input, "query")) {
-            command = std::make_unique<QueryCommand>(input);
-        } else if (startsWith(input, "analytic")) {
-            command = std::make_unique<AnalyticCommand>(input);
-        } else {
-            std::cout << "Unknown command.\n";
-            continue;
-        }
+    if (choice == 1) {
+        std::string filename;
+        std::cout << "Write filename: ";
+        std::getline(std::cin, filename);
 
-        command->execute();
+        auto logs = loadLogsFromFile(filename);
+        repo = std::make_shared<InMemoryRepository>();
+        repo->setLogs(logs);
+    } else {
+        std::cout << "Database is not done yet\n";
+        return 1;
     }
+
+    // Цикл команд
+    std::string command;
+    while (true) {
+        std::cout << "\nInput command: ";
+        std::getline(std::cin, command);
+
+        if (command == "exit") break;
+
+        if (command.rfind("query ", 0) == 0) {
+            std::string queryArgs = command.substr(6);
+            QueryCommand qc(queryArgs, repo);
+            qc.execute();
+        } else {
+            std::cout << "Unknown command \n";
+        }
+    }
+
     return 0;
 }

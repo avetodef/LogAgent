@@ -6,7 +6,8 @@ enum class LogLevel {
     DEBUG,
     INFO,
     WARN,
-    ERROR
+    ERROR,
+    UNKNOWN
 };
 
 inline std::string logLevelToString(LogLevel level) {
@@ -18,4 +19,13 @@ inline std::string logLevelToString(LogLevel level) {
         case LogLevel::ERROR: return "ERROR";
         default: return "UNKNOWN";
     }
+}
+
+LogLevel stringToLogLevel(std::string & s){
+    if (s == "TRACE") return LogLevel::TRACE;
+    if (s == "DEBUG") return LogLevel::DEBUG;
+    if (s == "INFO") return LogLevel::INFO;
+    if (s == "WARN") return LogLevel::WARN;
+    if (s == "ERROR") return LogLevel::ERROR;
+    return LogLevel::UNKNOWN;
 }

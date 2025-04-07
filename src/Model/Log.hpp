@@ -1,5 +1,7 @@
 #pragma once
+
 #include <string>
+#include <sstream>
 
 class Log {
 public:
@@ -9,6 +11,9 @@ public:
     std::string module;
     std::string message;
 
-    static Log fromString(const std::string& line);
+    Log() = default;
+    Log(int id, const std::string& timestamp, const std::string& level, const std::string& module, const std::string& message);
+
     std::string toString() const;
+    static Log fromString(const std::string& line);
 };

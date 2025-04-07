@@ -1,5 +1,6 @@
 #pragma once
 #include "Criteria.hpp"
+#include <utility>
 #include <vector>
 #include <memory>
 
@@ -7,13 +8,13 @@ class OrCriteria : public Criteria {
 private:
     std::vector<std::shared_ptr<Criteria>> criteriaList;
 public:
-    OrCriteria(const std::vector<std::shared_ptr<Criteria>>& list) : criteriaList(list) {}
+    explicit OrCriteria(std::vector<std::shared_ptr<Criteria>>  list) : criteriaList(std::move(list)) {}
 
-    //TODO переделать
     bool isSatisfiedBy(const Log& log) const override {
+        bool result = true;
         for (const auto& c : criteriaList) {
-            if (!c->isSatisfiedBy(log)) return false;
+            result = result || c;
         }
-        return true;
+        return result;
     }
 };

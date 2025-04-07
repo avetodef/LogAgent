@@ -1,10 +1,11 @@
 #pragma once
 #include <string>
+#include <utility>
 
 class Command {
 public:
     Command() = default;
-    explicit Command(const std::string& args) : args(args) {}
+    explicit Command(std::string  args) : args(std::move(args)) {}
     virtual ~Command() = default;
 
     virtual void execute() = 0;

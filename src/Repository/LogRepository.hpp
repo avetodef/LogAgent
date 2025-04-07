@@ -1,7 +1,7 @@
 #include <optional>
-#include "Log.hpp"
 #include <vector>
-#include "Criteria.hpp"
+#include "Model/Log.hpp"
+#include "Criteria/Criteria.hpp"
 #include <memory>
 
 #pragma once
@@ -15,4 +15,5 @@ public:
     virtual std::vector<Log> findAllByCriteria(const std::vector<std::shared_ptr<Criteria>>& criteria) = 0;
     virtual void save(const Log& log) = 0;
     virtual void deleteById(int id) = 0;
+    virtual void setLogs(const std::vector<Log>& logs) = 0;
 };
