@@ -10,7 +10,6 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 file(GLOB_RECURSE SOURCES
         "src/*.cpp"
         "src/Aggregation/*.cpp"
-        "src/Command/*.cpp"
         "src/Criteria/*.cpp"
         "src/Repository/*.cpp"
         "src/Model/*.cpp"

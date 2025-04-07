@@ -2,6 +2,7 @@
 
 #include <string>
 #include <sstream>
+#include "LogLevel.hpp"
 
 class Log {
 public:
@@ -9,6 +10,7 @@ public:
     std::string timestamp;
     std::string level;
     std::string module;
+    std::string method;
     std::string message;
 
     Log() = default;

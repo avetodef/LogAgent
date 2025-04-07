@@ -7,7 +7,6 @@
 
 class InMemoryRepository : public LogRepository {
 private:
-    std::vector<Log> logs;
     mutable std::mutex mutex;
 
 public:
