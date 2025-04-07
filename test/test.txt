@@ -1,0 +1,15 @@
+1|2023-05-15 10:30:45|INFO|AUTH|User admin logged in successfully
+2|2023-05-15 10:31:02|ERROR|DB|Failed to connect to database: timeout
+3|2023-05-15 10:32:18|WARNING|CACHE|Cache size exceeds threshold (85%)
+4|2023-05-15 10:33:45|DEBUG|NETWORK|Packet received: size=1456 bytes
+5|2023-05-15 10:35:12|INFO|AUTH|User johndoe logged out
+6|2023-05-15 10:36:33|ERROR|API|Invalid request: missing parameters
+7|2023-05-15 10:37:59|CRITICAL|DB|Database corruption detected!
+8|2023-05-15 10:38:24|INFO|BACKUP|Backup completed successfully
+9|2023-05-15 10:39:47|WARNING|MEMORY|High memory usage: 92%
+10|2023-05-15 10:40:15|DEBUG|PROCESSING|Task completed in 245ms
+11|2023-05-15 10:41:32|ERROR|AUTH|Invalid credentials for user hacker
+12|2023-05-15 10:42:58|INFO|SYSTEM|Server restarted
+13|2023-05-15 10:43:22|WARNING|NETWORK|High latency detected (320ms)
+14|2023-05-15 10:44:39|DEBUG|VALIDATION|Input validation passed
+15|2023-05-15 10:45:01|INFO|NOTIFICATION|Email sent to user@example.com
