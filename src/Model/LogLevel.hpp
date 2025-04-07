@@ -21,7 +21,7 @@ inline std::string logLevelToString(LogLevel level) {
     }
 }
 
-LogLevel stringToLogLevel(std::string & s){
+inline LogLevel stringToLogLevel(std::string & s){
     if (s == "TRACE") return LogLevel::TRACE;
     if (s == "DEBUG") return LogLevel::DEBUG;
     if (s == "INFO") return LogLevel::INFO;

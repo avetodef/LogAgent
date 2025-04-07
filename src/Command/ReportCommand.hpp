@@ -1,14 +1,20 @@
 #pragma once
 #include "Command.hpp"
+#include <fstream>
 #include <iostream>
 #include <map>
-#include <utility>
 
-class AnalyticsCommand : public Command {
+class ReportCommand : public Command {
 public:
-    explicit AnalyticsCommand(std::shared_ptr<LogRepository> repository) : repository(std::move(repository)) {}
+    explicit ReportCommand(const std::shared_ptr<LogRepository> &repository) : repository(repository) {}
 
     void execute() override {
+        std::ofstream out("report.txt");
+        if (!out.is_open()) {
+            std::cout << "Ошибка записи файла.\n";
+            return;
+        }
+
         int warnings = 0, errors = 0;
         std::map<std::string, int> errorTypes;
         std::map<std::string, int> moduleErrors;
@@ -22,12 +28,12 @@ public:
             }
         }
 
-        std::cout << "Amount of warnings: " << warnings << "\n";
-        std::cout << "Amounf of errors: " << errors << "\n";
+        out << "Amount of warnings: " << warnings << "\n";
+        out << "Amount of errors: " << errors << "\n";
 
-        std::cout << "Error counts:\n";
+        out << "Error count:\n";
         for (const auto& [type, count] : errorTypes) {
-            std::cout << "- " << type << ": " << count << "\n";
+            out << "- " << type << ": " << count << "\n";
         }
 
         std::string mostFailingModule;
@@ -39,8 +45,12 @@ public:
             }
         }
 
-        std::cout << "Most failing module: " << mostFailingModule << " (" << maxErrors << ")\n";
+        out << "Most failing module: " << mostFailingModule << " (" << maxErrors << ")\n";
+
+        out.close();
+        std::cout << "Log analysis is saved in report.txt\n";
     }
+
 private:
     std::shared_ptr<LogRepository> repository;
 };

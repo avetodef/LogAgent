@@ -1,62 +1,47 @@
 #include <iostream>
-#include <fstream>
-#include <vector>
 #include <memory>
-#include "Model/Log.hpp"
+#include "Command/CommandFactory.hpp"
 #include "Repository/InMemoryRepository.hpp"
-#include "Command/QueryCommand.hpp"
-
-std::vector<Log> loadLogsFromFile(const std::string& filename) {
-    std::ifstream file(filename);
-    std::vector<Log> logs;
-    std::string line;
-
-    while (std::getline(file, line)) {
-        try {
-            logs.push_back(Log::fromString(line));
-        } catch (...) {
-            std::cerr << "Parse error: " << line << std::endl;
-        }
-    }
-
-    return logs;
-}
 
 int main() {
-    std::cout << "Choose data source:\n1 - File\n2 - Database\n> ";
-    int choice;
-    std::cin >> choice;
-    std::cin.ignore();
+    std::shared_ptr<LogRepository> repository = std::make_shared<InMemoryRepository>();
 
-    std::shared_ptr<LogRepository> repo;
+    std::cout << "bello)\n";
 
-    if (choice == 1) {
-        std::string filename;
-        std::cout << "Write filename: ";
-        std::getline(std::cin, filename);
-
-        auto logs = loadLogsFromFile(filename);
-        repo = std::make_shared<InMemoryRepository>();
-        repo->setLogs(logs);
-    } else {
-        std::cout << "Database is not done yet\n";
-        return 1;
-    }
-
-    // Цикл команд
-    std::string command;
+    std::string input;
     while (true) {
-        std::cout << "\nInput command: ";
-        std::getline(std::cin, command);
+        std::cout << "> ";
+        std::getline(std::cin, input);
 
-        if (command == "exit") break;
+        if (input.empty()) {
+            continue;
+        }
 
-        if (command.rfind("query ", 0) == 0) {
-            std::string queryArgs = command.substr(6);
-            QueryCommand qc(queryArgs, repo);
-            qc.execute();
+        std::istringstream iss(input);
+        std::string commandName;
+        iss >> commandName;
+
+        std::string args;
+        std::getline(iss, args);
+
+        size_t firstChar = args.find_first_not_of(" \t");
+        if (firstChar != std::string::npos) {
+            args = args.substr(firstChar);
         } else {
-            std::cout << "Unknown command \n";
+            args.clear();
+        }
+
+        // std::cout << "Command: '" << commandName << "', Args: '" << args << "'\n";
+
+        try {
+            auto command = CommandFactory::create(commandName, args, repository);
+            if (!command) {
+                std::cout << "idk this command.\n";
+                continue;
+            }
+            command->execute();
+        } catch (const std::exception& e) {
+            std::cerr << "Error: " << e.what() << "\n";
         }
     }
 
