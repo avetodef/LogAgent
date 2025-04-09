@@ -9,18 +9,13 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 # Автоматический поиск исходных файлов (только .cpp)
 file(GLOB_RECURSE SOURCES
         "src/*.cpp"
-        "src/Aggregation/*.cpp"
-        "src/Criteria/*.cpp"
         "src/Repository/*.cpp"
-        "src/Model/*.cpp"
         )
 
 # Автоматический поиск заголовочных файлов (только .hpp)
 file(GLOB_RECURSE HEADERS
         "src/*.hpp"
-        "src/Aggregation/*.hpp"
         "src/Command/*.hpp"
-        "src/Criteria/*.hpp"
         "src/Repository/*.hpp"
         "src/Model/*.hpp"
         )

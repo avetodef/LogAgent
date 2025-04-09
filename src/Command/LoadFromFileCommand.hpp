@@ -6,53 +6,49 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
+#include <iomanip>
+#include <utility>
 
 class LoadFromFileCommand : public Command {
 private:
     std::shared_ptr<LogRepository> repository;
     std::string args;
+
 public:
-    LoadFromFileCommand(const std::shared_ptr<LogRepository> &repository, const std::string &args) : repository(
-            repository), args(args) {}
+    LoadFromFileCommand(std::shared_ptr<LogRepository>  repository, std::string  args)
+            : repository(std::move(repository)), args(std::move(args)) {}
 
     void execute() override {
+        repository->clear();
         if (args.empty()) {
-            std::cout << "plz write filename: loadFromFile <filename>\n";
+            std::cout << "Please specify filename: loadFromFile <filename>\n";
             return;
         }
 
         std::ifstream file(args);
         if (!file.is_open()) {
-            std::cout << "couldn't open file: " << args << "\n";
+            std::cout << "Failed to open file: " << args << "\n";
             return;
         }
 
+        size_t loadedCount = 0;
+        size_t errorCount = 0;
         std::string line;
+
         while (std::getline(file, line)) {
-            std::istringstream iss(line);
-            Log log;
-            char delimiter;
-
-            int id;
-            if (!(iss >> id >> delimiter) || delimiter != '|') {
-                std::cout << "Error parsing ID in line: " << line << "\n";
-                continue;
+            try {
+                Log log = Log::fromString(line);
+                repository->save(log);
+                loadedCount++;
+            } catch (const std::exception& e) {
+                std::cerr << "Error parsing line: " << line
+                          << "\nReason: " << e.what() << "\n";
+                errorCount++;
             }
-            std::string timestamp;
-            std::getline(iss, timestamp, '|');
-            log.timestamp = timestamp;
-
-            std::getline(iss, log.level, '|');
-
-            std::getline(iss, log.module, '|');
-
-            std::getline(iss, log.message);
-
-            log.message.erase(0, log.message.find_first_not_of(" \t"));
-            log.message.erase(log.message.find_last_not_of(" \t") + 1);
-
-            repository->save(log);
         }
-        std::cout << "loaded this many logs: " << repository->logs.size() << "\n";
+
+        std::cout << "Loading complete. Success: " << loadedCount
+                  << ", Errors: " << errorCount
+                  << ", Total: " << (loadedCount + errorCount) << "\n";
     }
 };

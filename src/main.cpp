@@ -31,8 +31,6 @@ int main() {
             args.clear();
         }
 
-        // std::cout << "Command: '" << commandName << "', Args: '" << args << "'\n";
-
         try {
             auto command = CommandFactory::create(commandName, args, repository);
             if (!command) {
