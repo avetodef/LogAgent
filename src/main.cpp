@@ -6,7 +6,7 @@
 int main() {
     std::shared_ptr<LogRepository> repository = std::make_shared<InMemoryRepository>();
 
-    std::cout << "bello)\n";
+    std::cout << "hello)\n";
 
     std::string input;
     while (true) {

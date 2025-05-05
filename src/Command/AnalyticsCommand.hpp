@@ -13,6 +13,10 @@ public:
             : repository(std::move(repository)) {}
 
     void execute() override {
+        system("chcp 65001");
+        std::locale::global(std::locale(""));
+        std::cout.imbue(std::locale());
+
         int warnings = 0, errors = 0, securityErrors = 0;
         std::map<std::string, int> errorTypes;
         std::map<std::string, int> moduleErrors;

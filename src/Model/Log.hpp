@@ -49,24 +49,28 @@ public:
         std::istringstream iss(line);
         char delimiter;
         int id;
-        std::string timestampStr, levelStr, module, method, message;
+        std::string timestampStr, levelStr, module, message;
 
+        // Чтение id
         iss >> id >> delimiter;
+
+        // Чтение остальных полей
         std::getline(iss, timestampStr, '|');
         std::getline(iss, levelStr, '|');
         std::getline(iss, module, '|');
-        std::getline(iss, method, '|');
-        std::getline(iss, message);
+        std::getline(iss, message); // Всё, что осталось — message
 
+        // Убрать пробелы в начале/конце (опционально)
         message.erase(0, message.find_first_not_of(" \t"));
         message.erase(message.find_last_not_of(" \t") + 1);
 
+        // Парсинг времени
         std::tm tm = {};
         std::istringstream tsStream(timestampStr);
         tsStream >> std::get_time(&tm, "%Y-%m-%d %H:%M:%S");
         auto timestamp = std::chrono::system_clock::from_time_t(std::mktime(&tm));
 
-        return Log(id, timestamp, stringToLogLevel(levelStr), module, method, message);
+        return Log(id, timestamp, stringToLogLevel(levelStr), module, "", message);
     }
 
     static LogLevel stringToLogLevel(const std::string& s) {
